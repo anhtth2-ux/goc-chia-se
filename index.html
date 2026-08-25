@@ -3,335 +3,432 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Góc Chia Sẻ | CPL UEF</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #24252b;
+      --muted: #747782;
+      --line: #e8e9ee;
+      --primary: #34353d;
+      --soft: #f0f1f5;
+      --student: #34353d;
+      --cpl: #f0f1f5;
+      --success: #2f7a55;
+      --danger: #c84b4b;
     }
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f7f5f2;
-      color: #333;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
 
-    .container {
-      width: min(92%, 760px);
-      margin: auto;
-    }
+    button, input, textarea { font: inherit; }
 
     .page {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 30px 0;
+      padding: 28px 16px;
+    }
+
+    .container {
+      width: min(100%, 760px);
     }
 
     .card {
-      background: white;
+      background: var(--card);
+      border: 1px solid rgba(0,0,0,.04);
       border-radius: 24px;
-      padding: 42px;
-      width: 100%;
-      box-shadow: 0 10px 35px rgba(0,0,0,0.07);
+      padding: 38px;
+      box-shadow: 0 14px 45px rgba(28, 30, 40, .07);
     }
 
-    .logo {
+    .hidden { display: none !important; }
+
+    .brand {
       text-align: center;
-      font-size: 14px;
-      letter-spacing: 1px;
-      color: #777;
-      margin-bottom: 25px;
+      margin-bottom: 24px;
+    }
+
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--primary);
+      color: white;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .brand-name {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      color: var(--muted);
+      text-transform: uppercase;
     }
 
     h1 {
+      margin: 0 0 12px;
       text-align: center;
-      margin: 0 0 15px;
-      font-size: 34px;
+      font-size: clamp(28px, 5vw, 36px);
+      letter-spacing: -.7px;
     }
 
     .subtitle {
       text-align: center;
-      color: #777;
+      color: var(--muted);
       line-height: 1.7;
-      margin-bottom: 35px;
+      margin-bottom: 28px;
     }
 
-    textarea,
-    input {
+    .intro-box {
+      background: #fafafd;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 17px;
+      color: #666a75;
+      line-height: 1.65;
+      font-size: 14px;
+      margin: 20px 0 24px;
+    }
+
+    .intro-box strong { color: var(--text); }
+
+    textarea, input {
       width: 100%;
-      border: 1px solid #ddd;
-      border-radius: 14px;
-      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      padding: 15px 16px;
       font-size: 16px;
       outline: none;
-      font-family: inherit;
+      color: var(--text);
+      background: white;
     }
 
     textarea {
-      min-height: 180px;
+      min-height: 170px;
       resize: vertical;
+      line-height: 1.55;
     }
 
-    textarea:focus,
-    input:focus {
-      border-color: #777;
+    textarea:focus, input:focus {
+      border-color: #9a9ca5;
+      box-shadow: 0 0 0 3px rgba(70,70,80,.06);
+    }
+
+    .field-meta {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 7px;
+      color: #999ca5;
+      font-size: 12px;
     }
 
     button {
-      border: none;
+      border: 0;
       border-radius: 14px;
-      padding: 15px 20px;
-      font-size: 16px;
+      padding: 14px 18px;
       cursor: pointer;
-      font-weight: 600;
-      width: 100%;
-      margin-top: 15px;
+      font-weight: 700;
+      transition: transform .15s ease, opacity .15s ease;
     }
 
+    button:hover { transform: translateY(-1px); }
+    button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
     .primary {
-      background: #333;
+      width: 100%;
+      margin-top: 14px;
+      background: var(--primary);
       color: white;
     }
 
     .secondary {
-      background: #f0eee9;
-      color: #333;
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+      width: 100%;
+      margin-top: 10px;
+      background: var(--soft);
+      color: var(--text);
     }
 
     .divider {
       display: flex;
       align-items: center;
-      gap: 15px;
-      margin: 30px 0;
-      color: #aaa;
-      font-size: 14px;
+      gap: 13px;
+      margin: 25px 0 8px;
+      color: #aaaeb7;
+      font-size: 13px;
     }
 
-    .divider::before,
-    .divider::after {
+    .divider::before, .divider::after {
       content: "";
       height: 1px;
-      background: #eee;
+      background: var(--line);
       flex: 1;
     }
 
-    .hidden {
-      display: none !important;
+    .back {
+      background: transparent;
+      color: var(--muted);
+      padding: 0;
+      margin: 0 0 22px;
+      font-weight: 500;
     }
 
+    .error, .success {
+      font-size: 14px;
+      text-align: center;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    .error { color: var(--danger); }
+    .success { color: var(--success); }
+
     .code-box {
-      background: #f5f3ef;
-      border-radius: 16px;
+      background: #f7f7fa;
+      border: 1px solid var(--line);
+      border-radius: 18px;
       padding: 22px;
       text-align: center;
-      margin: 25px 0;
+      margin: 24px 0;
+    }
+
+    .code-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
     }
 
     .code {
-      font-size: 27px;
-      font-weight: bold;
-      letter-spacing: 2px;
-      margin-top: 10px;
-    }
-
-    .notice {
-      background: #faf8f4;
-      border-radius: 14px;
-      padding: 15px;
-      font-size: 14px;
-      color: #777;
-      line-height: 1.6;
+      font-size: clamp(22px, 6vw, 30px);
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      word-break: break-all;
     }
 
     .chat-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .chat-code {
-      font-size: 13px;
-      color: #888;
-    }
-
-    .messages {
-      height: 420px;
-      overflow-y: auto;
-      padding: 10px 0;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
       margin-bottom: 15px;
     }
 
-    .message {
-      max-width: 78%;
-      padding: 13px 16px;
-      border-radius: 18px;
+    .chat-title {
+      font-weight: 800;
+      font-size: 18px;
+    }
+
+    .chat-code {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
+    .online-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #54a978;
+      flex: 0 0 auto;
+    }
+
+    .messages {
+      height: 430px;
+      overflow-y: auto;
+      padding: 8px 2px 4px;
+      margin-bottom: 14px;
+      scroll-behavior: smooth;
+    }
+
+    .message-row {
+      display: flex;
       margin-bottom: 12px;
+    }
+
+    .message-row.student { justify-content: flex-end; }
+    .message-row.cpl { justify-content: flex-start; }
+
+    .message {
+      max-width: min(78%, 560px);
+      padding: 12px 15px;
+      border-radius: 18px;
       line-height: 1.5;
       white-space: pre-wrap;
       word-break: break-word;
     }
 
-    .student {
-      background: #333;
+    .message.student {
+      background: var(--student);
       color: white;
-      margin-left: auto;
       border-bottom-right-radius: 5px;
     }
 
-    .cpl {
-      background: #f0eee9;
-      color: #333;
-      margin-right: auto;
+    .message.cpl {
+      background: var(--cpl);
+      color: var(--text);
       border-bottom-left-radius: 5px;
     }
 
-    .message-time {
+    .message-sender {
       font-size: 11px;
-      opacity: 0.55;
-      margin-top: 5px;
+      opacity: .58;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .message-time {
+      font-size: 10px;
+      opacity: .55;
+      margin-top: 6px;
+    }
+
+    .empty-chat {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 30px;
     }
 
     .chat-input {
       display: flex;
-      gap: 10px;
+      align-items: flex-end;
+      gap: 9px;
     }
 
     .chat-input textarea {
-      min-height: 55px;
-      height: 55px;
+      min-height: 52px;
+      height: 52px;
+      max-height: 140px;
+      resize: none;
       flex: 1;
+      padding: 14px;
     }
 
     .send-btn {
-      width: 80px;
-      margin-top: 0;
+      width: 72px;
+      margin: 0;
+      min-height: 52px;
     }
 
-    .back {
-      background: none;
-      border: none;
-      width: auto;
-      padding: 0;
-      margin: 0 0 20px;
-      color: #777;
-      font-weight: normal;
-    }
-
-    .error {
-      color: #c0392b;
-      font-size: 14px;
-      margin-top: 12px;
+    .chat-help {
+      color: #92959f;
+      font-size: 11px;
+      margin-top: 8px;
       text-align: center;
     }
 
-    .success {
-      color: #26734d;
-      font-size: 14px;
-      margin-top: 12px;
+    .footer-note {
       text-align: center;
+      color: #9a9da6;
+      font-size: 12px;
+      margin-top: 20px;
+      line-height: 1.5;
     }
 
     @media (max-width: 600px) {
+      .page { padding: 12px; }
       .card {
-        padding: 28px 20px;
-        border-radius: 18px;
+        padding: 26px 18px;
+        border-radius: 20px;
       }
-
-      h1 {
-        font-size: 28px;
-      }
-
-      .message {
-        max-width: 88%;
-      }
+      .messages { height: 55vh; min-height: 350px; }
+      .message { max-width: 88%; }
+      .chat-input { align-items: stretch; }
+      .send-btn { width: 62px; }
     }
   </style>
 </head>
 
 <body>
-
 <div class="page">
   <div class="container">
 
     <!-- TRANG CHỦ -->
-    <div id="home" class="card">
-
-      <div class="logo">
-        CPL UEF
+    <section id="home" class="card">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-name">CPL UEF</div>
       </div>
 
       <h1>Góc Chia Sẻ</h1>
 
       <div class="subtitle">
         Có những điều dễ viết ra hơn là nói thành lời.<br>
-        Bạn có thể chia sẻ ẩn danh với CPL.
+        Bạn có thể chia sẻ với CPL mà không cần cho biết tên.
+      </div>
+
+      <div class="intro-box">
+        <strong>💬 Bạn có điều muốn nói?</strong><br>
+        Hãy gửi chia sẻ, câu hỏi hoặc điều bạn đang băn khoăn.
+        Sau khi gửi, bạn sẽ nhận được một <strong>mã cuộc trò chuyện</strong>
+        để quay lại xem phản hồi từ CPL.
       </div>
 
       <button class="primary" onclick="showPage('new-chat')">
         Bắt đầu chia sẻ
       </button>
 
-      <div class="divider">
-        hoặc
-      </div>
+      <div class="divider">hoặc</div>
 
       <button class="secondary" onclick="showPage('login')">
         Đã có mã cuộc trò chuyện
       </button>
 
-      <div class="notice" style="margin-top:25px;">
-        Bạn không cần cung cấp tên, mã số sinh viên hay thông tin cá nhân
-        để bắt đầu cuộc trò chuyện.
+      <div class="footer-note">
+        Bạn không cần cung cấp tên, mã số sinh viên hay thông tin cá nhân để bắt đầu.
       </div>
-
-    </div>
-
+    </section>
 
     <!-- TẠO CUỘC TRÒ CHUYỆN -->
-    <div id="new-chat" class="card hidden">
-
-      <button class="back" onclick="showPage('home')">
-        ← Quay lại
-      </button>
+    <section id="new-chat" class="card hidden">
+      <button class="back" onclick="showPage('home')">← Quay lại</button>
 
       <h1>Gửi chia sẻ</h1>
-
       <div class="subtitle">
-        Hãy viết điều bạn đang muốn chia sẻ với CPL.
+        Bạn có thể viết theo cách của mình. Không cần phải viết thật hoàn chỉnh.
       </div>
 
-      <textarea
-        id="initialMessage"
-        placeholder="Bạn đang muốn nói điều gì?"
-      ></textarea>
+      <textarea id="initialMessage"
+        maxlength="3000"
+        placeholder="Bạn đang muốn nói điều gì?"></textarea>
 
-      <button
-        id="createButton"
-        class="primary"
-        onclick="createConversation()"
-      >
+      <div class="field-meta">
+        <span id="initialCount">0/3000</span>
+      </div>
+
+      <button id="createButton" class="primary" onclick="createConversation()">
         Gửi chia sẻ
       </button>
 
       <div id="createError" class="error"></div>
-
-    </div>
-
+    </section>
 
     <!-- HIỆN MÃ -->
-    <div id="code-page" class="card hidden">
+    <section id="code-page" class="card hidden">
+      <div class="brand">
+        <div class="brand-mark">✓</div>
+      </div>
 
       <h1>Chia sẻ đã được gửi 💌</h1>
 
@@ -340,43 +437,30 @@
       </div>
 
       <div class="code-box">
-
-        <div>Mã cuộc trò chuyện của bạn</div>
-
-        <div id="conversationCode" class="code">
-          CPL-XXXXXXXXXXXX
-        </div>
-
+        <div class="code-label">Mã cuộc trò chuyện của bạn</div>
+        <div id="conversationCode" class="code">CPL-XXXXXXXX</div>
       </div>
 
-      <div class="notice">
+      <div class="intro-box">
         <strong>Hãy lưu lại mã này.</strong><br>
         Bạn cần mã để quay lại xem phản hồi từ CPL và tiếp tục cuộc trò chuyện.
+        Nếu làm mất mã, hệ thống hiện tại không thể tự tìm lại cuộc trò chuyện cho bạn.
       </div>
 
-      <button
-        class="primary"
-        onclick="openChat(currentAccessCode)"
-      >
+      <button class="primary" onclick="openChat(currentAccessCode)">
         Vào cuộc trò chuyện
       </button>
 
-      <button
-        class="secondary"
-        onclick="copyCode()"
-      >
+      <button class="secondary" onclick="copyCode()">
         Sao chép mã
       </button>
 
-    </div>
-
+      <div id="copySuccess" class="success"></div>
+    </section>
 
     <!-- NHẬP MÃ -->
-    <div id="login" class="card hidden">
-
-      <button class="back" onclick="showPage('home')">
-        ← Quay lại
-      </button>
+    <section id="login" class="card hidden">
+      <button class="back" onclick="showPage('home')">← Quay lại</button>
 
       <h1>Tiếp tục cuộc trò chuyện</h1>
 
@@ -384,134 +468,109 @@
         Nhập mã bạn đã nhận được khi gửi chia sẻ.
       </div>
 
-      <input
-        id="accessCode"
+      <input id="accessCode"
         placeholder="Ví dụ: CPL-A82K91F72B3C"
         autocomplete="off"
-      >
+        maxlength="30">
 
-      <button
-        class="primary"
-        onclick="openExistingChat()"
-      >
+      <button class="primary" onclick="openExistingChat()">
         Tiếp tục
       </button>
 
       <div id="loginError" class="error"></div>
-
-    </div>
-
+    </section>
 
     <!-- CHAT -->
-    <div id="chat" class="card hidden">
-
+    <section id="chat" class="card hidden">
       <div class="chat-header">
-
         <div>
-          <strong>Góc Chia Sẻ</strong>
+          <div class="chat-title">Góc Chia Sẻ</div>
           <div class="chat-code" id="chatCode"></div>
         </div>
-
+        <div class="online-dot" title="Đang kết nối"></div>
       </div>
 
-      <div id="messages" class="messages"></div>
+      <div id="messages" class="messages">
+        <div class="empty-chat">
+          Đang tải cuộc trò chuyện...
+        </div>
+      </div>
 
       <div class="chat-input">
+        <textarea id="messageInput"
+          maxlength="3000"
+          placeholder="Viết tin nhắn..."></textarea>
 
-        <textarea
-          id="messageInput"
-          placeholder="Viết tin nhắn..."
-        ></textarea>
-
-        <button
-          class="primary send-btn"
-          onclick="sendMessage()"
-        >
+        <button id="sendButton" class="primary send-btn" onclick="sendMessage()">
           Gửi
         </button>
+      </div>
 
+      <div class="chat-help">
+        Enter để gửi · Shift + Enter để xuống dòng
       </div>
 
       <div id="sendError" class="error"></div>
-
-    </div>
+    </section>
 
   </div>
 </div>
 
-
 <script>
-
   // =====================================
   // KẾT NỐI SUPABASE
   // =====================================
-
-  const SUPABASE_URL =
-    'https://hoehscuamkbnzjdzhzbs.supabase.co';
+  const SUPABASE_URL = 'https://hoehscuamkbnzjdzhzbs.supabase.co';
 
   const SUPABASE_KEY =
     'sb_publishable_rRxiCGRButFCBglYrBZZwg_NwVzDWPT';
 
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY
-    );
-
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
   let currentAccessCode = '';
   let refreshTimer = null;
 
-
   // =====================================
   // CHUYỂN TRANG
   // =====================================
-
   function showPage(pageId) {
-
-    const pages = [
-      'home',
-      'new-chat',
-      'code-page',
-      'login',
-      'chat'
-    ];
+    const pages = ['home', 'new-chat', 'code-page', 'login', 'chat'];
 
     pages.forEach(id => {
-      document
-        .getElementById(id)
-        .classList.add('hidden');
+      document.getElementById(id).classList.add('hidden');
     });
 
-    document
-      .getElementById(pageId)
-      .classList.remove('hidden');
+    document.getElementById(pageId).classList.remove('hidden');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // =====================================
+  // ĐẾM KÝ TỰ
+  // =====================================
+  const initialMessage = document.getElementById('initialMessage');
+  const initialCount = document.getElementById('initialCount');
+
+  initialMessage.addEventListener('input', () => {
+    initialCount.textContent = `${initialMessage.value.length}/3000`;
+  });
 
   // =====================================
   // TẠO CUỘC TRÒ CHUYỆN
   // =====================================
-
   async function createConversation() {
+    const input = document.getElementById('initialMessage');
+    const button = document.getElementById('createButton');
+    const error = document.getElementById('createError');
 
-    const input =
-      document.getElementById('initialMessage');
-
-    const button =
-      document.getElementById('createButton');
-
-    const error =
-      document.getElementById('createError');
-
-    const message =
-      input.value.trim();
-
+    const message = input.value.trim();
     error.textContent = '';
 
     if (!message) {
-      error.textContent =
-        'Bạn hãy viết nội dung muốn chia sẻ nhé.';
+      error.textContent = 'Bạn hãy viết nội dung muốn chia sẻ nhé.';
       return;
     }
 
@@ -519,98 +578,71 @@
     button.textContent = 'Đang gửi...';
 
     try {
-
       const { data, error: supabaseError } =
-        await supabaseClient.rpc(
-          'create_conversation',
-          {
-            initial_message: message
-          }
-        );
+        await supabaseClient.rpc('create_conversation', {
+          initial_message: message
+        });
 
-      if (supabaseError)
-        throw supabaseError;
-
-      if (!data || data.length === 0)
+      if (supabaseError) throw supabaseError;
+      if (!data || data.length === 0) {
         throw new Error('Không tạo được cuộc trò chuyện.');
+      }
 
-      currentAccessCode =
-        data[0].access_code;
+      currentAccessCode = data[0].access_code;
 
-      document.getElementById(
-        'conversationCode'
-      ).textContent =
+      document.getElementById('conversationCode').textContent =
         currentAccessCode;
 
       showPage('code-page');
 
       input.value = '';
+      initialCount.textContent = '0/3000';
 
     } catch (err) {
-
       console.error(err);
-
-      error.textContent =
-        'Có lỗi xảy ra. Bạn thử lại nhé.';
-
+      error.textContent = 'Có lỗi xảy ra. Bạn thử lại nhé.';
     } finally {
-
       button.disabled = false;
       button.textContent = 'Gửi chia sẻ';
-
     }
   }
-
 
   // =====================================
   // SAO CHÉP MÃ
   // =====================================
-
-  function copyCode() {
-
-    navigator.clipboard.writeText(
-      currentAccessCode
-    );
-
-    alert('Đã sao chép mã cuộc trò chuyện.');
+  async function copyCode() {
+    try {
+      await navigator.clipboard.writeText(currentAccessCode);
+      document.getElementById('copySuccess').textContent =
+        'Đã sao chép mã cuộc trò chuyện.';
+    } catch (err) {
+      document.getElementById('copySuccess').textContent =
+        'Không thể tự sao chép. Bạn hãy ghi lại mã này nhé.';
+    }
   }
-
 
   // =====================================
   // MỞ CHAT BẰNG MÃ
   // =====================================
-
   async function openExistingChat() {
+    const input = document.getElementById('accessCode');
+    const error = document.getElementById('loginError');
 
-    const input =
-      document.getElementById('accessCode');
-
-    const error =
-      document.getElementById('loginError');
-
-    const code =
-      input.value.trim().toUpperCase();
-
+    const code = input.value.trim().toUpperCase();
     error.textContent = '';
 
     if (!code) {
-      error.textContent =
-        'Bạn hãy nhập mã cuộc trò chuyện.';
+      error.textContent = 'Bạn hãy nhập mã cuộc trò chuyện.';
       return;
     }
 
     try {
-
       const { data, error: supabaseError } =
-        await supabaseClient.rpc(
-          'get_conversation',
-          {
-            input_access_code: code
-          }
-        );
+        await supabaseClient.rpc('get_conversation', {
+          input_access_code: code
+        });
 
-      if (supabaseError)
-        throw supabaseError;
+      if (supabaseError) throw supabaseError;
 
       if (!data || data.length === 0) {
         error.textContent =
@@ -621,157 +653,161 @@
       currentAccessCode = code;
 
       showPage('chat');
-
       await loadMessages();
-
       startAutoRefresh();
 
     } catch (err) {
-
       console.error(err);
-
       error.textContent =
         'Không thể mở cuộc trò chuyện. Vui lòng thử lại.';
-
     }
   }
-
 
   // =====================================
   // MỞ CHAT SAU KHI TẠO
   // =====================================
-
   function openChat(code) {
-
     currentAccessCode = code;
 
     showPage('chat');
-
     loadMessages();
-
     startAutoRefresh();
   }
 
+  // =====================================
+  // HIỂN THỊ TIN NHẮN
+  // =====================================
+  function formatTime(value) {
+    if (!value) return '';
 
-  // =====================================
-  // TẢI TIN NHẮN
-  // =====================================
+    const date = new Date(value);
+
+    return date.toLocaleString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
 
   async function loadMessages() {
-
     const { data, error } =
-      await supabaseClient.rpc(
-        'get_conversation',
-        {
-          input_access_code:
-            currentAccessCode
-        }
-      );
+      await supabaseClient.rpc('get_conversation', {
+        input_access_code: currentAccessCode
+      });
 
     if (error) {
       console.error(error);
       return;
     }
 
-    const messages =
-      document.getElementById('messages');
+    const messages = document.getElementById('messages');
+
+    document.getElementById('chatCode').textContent =
+      currentAccessCode;
+
+    if (!data || data.length === 0) {
+      messages.innerHTML = `
+        <div class="empty-chat">
+          Chưa có tin nhắn nào.
+        </div>
+      `;
+      return;
+    }
 
     messages.innerHTML = '';
 
-    document.getElementById(
-      'chatCode'
-    ).textContent =
-      currentAccessCode;
-
     data.forEach(message => {
+      const row = document.createElement('div');
+      row.className =
+        'message-row ' +
+        (message.sender === 'student' ? 'student' : 'cpl');
 
-      const wrapper =
-        document.createElement('div');
-
-      wrapper.className =
+      const bubble = document.createElement('div');
+      bubble.className =
         'message ' +
-        (message.sender === 'student'
-          ? 'student'
-          : 'cpl');
+        (message.sender === 'student' ? 'student' : 'cpl');
 
-      wrapper.textContent =
-        message.content;
+      const sender = document.createElement('div');
+      sender.className = 'message-sender';
+      sender.textContent =
+        message.sender === 'student' ? 'Bạn' : 'CPL';
 
-      messages.appendChild(wrapper);
+      const content = document.createElement('div');
+      content.textContent = message.content;
 
+      const time = document.createElement('div');
+      time.className = 'message-time';
+      time.textContent = formatTime(message.created_at);
+
+      bubble.appendChild(sender);
+      bubble.appendChild(content);
+      bubble.appendChild(time);
+      row.appendChild(bubble);
+      messages.appendChild(row);
     });
 
-    messages.scrollTop =
-      messages.scrollHeight;
+    messages.scrollTop = messages.scrollHeight;
   }
-
 
   // =====================================
   // GỬI TIN NHẮN
   // =====================================
-
   async function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const button = document.getElementById('sendButton');
+    const error = document.getElementById('sendError');
 
-    const input =
-      document.getElementById('messageInput');
-
-    const error =
-      document.getElementById('sendError');
-
-    const message =
-      input.value.trim();
-
+    const message = input.value.trim();
     error.textContent = '';
 
-    if (!message) {
-      return;
-    }
+    if (!message) return;
 
-    const { error: supabaseError } =
-      await supabaseClient.rpc(
-        'send_student_message',
-        {
-          input_access_code:
-            currentAccessCode,
+    button.disabled = true;
+    button.textContent = '...';
 
-          message_content:
-            message
-        }
-      );
+    try {
+      const { error: supabaseError } =
+        await supabaseClient.rpc('send_student_message', {
+          input_access_code: currentAccessCode,
+          message_content: message
+        });
 
-    if (supabaseError) {
+      if (supabaseError) throw supabaseError;
 
-      console.error(supabaseError);
+      input.value = '';
+      await loadMessages();
 
+    } catch (err) {
+      console.error(err);
       error.textContent =
         'Không gửi được tin nhắn. Bạn thử lại nhé.';
-
-      return;
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Gửi';
+      input.focus();
     }
-
-    input.value = '';
-
-    await loadMessages();
   }
 
+  // =====================================
+  // ENTER ĐỂ GỬI
+  // SHIFT + ENTER = XUỐNG DÒNG
+  // =====================================
+  document.getElementById('messageInput').addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage();
+    }
+  });
 
   // =====================================
   // TỰ ĐỘNG KIỂM TRA PHẢN HỒI
   // =====================================
-
   function startAutoRefresh() {
+    if (refreshTimer) clearInterval(refreshTimer);
 
-    if (refreshTimer)
-      clearInterval(refreshTimer);
-
-    refreshTimer =
-      setInterval(
-        loadMessages,
-        5000
-      );
+    refreshTimer = setInterval(loadMessages, 5000);
   }
-
 </script>
-
 </body>
 </html>
