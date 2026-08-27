@@ -294,81 +294,152 @@
   </div>
 
 
-  <script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    // ==========================================
-    // SUPABASE
-    // ==========================================
+<script>
 
-    const SUPABASE_URL =
-      "https://hoehscuamkbnzjdzhzbs.supabase.co";
+  // ==========================================
+  // KẾT NỐI SUPABASE
+  // ==========================================
 
-    const SUPABASE_KEY =
-      "sb_publishable_rRxiCGRButFCBglYrBZZwg_NwVzDWPT";
+  const SUPABASE_URL =
+    "https://hoehscuamkbnzjdzhzbs.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_rRxiCGRButFCBglYrBZZwg_NwVzDWPT";
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
 
 
-    // ==========================================
-    // ĐĂNG NHẬP
-    // ==========================================
+  // ==========================================
+  // ĐĂNG NHẬP ADMIN
+  // ==========================================
 
-    async function login() {
+  async function login() {
 
-      const email =
-        document.getElementById("email").value.trim();
+    const email =
+      document.getElementById("email").value.trim();
 
-      const password =
-        document.getElementById("password").value;
+    const password =
+      document.getElementById("password").value;
 
-      const error =
-        document.getElementById("loginError");
+    const error =
+      document.getElementById("loginError");
 
-      error.textContent = "";
+    error.textContent = "";
 
-      if (!email || !password) {
-        error.textContent =
-          "Vui lòng nhập email và mật khẩu.";
-
-        return;
-      }
-
-      /*
-        PHẦN KẾT NỐI SUPABASE AUTH
-        SẼ ĐƯỢC THÊM Ở BƯỚC TIẾP THEO.
-      */
+    if (!email || !password) {
 
       error.textContent =
-        "Phần đăng nhập đang được kết nối...";
+        "Vui lòng nhập email và mật khẩu.";
+
+      return;
     }
 
+    // Hiển thị trạng thái đang đăng nhập
+    error.textContent = "Đang đăng nhập...";
 
-    // ==========================================
-    // ĐĂNG XUẤT
-    // ==========================================
+    // Đăng nhập bằng Supabase Auth
+    const { data, error: loginError } =
+      await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
 
-    function logout() {
+    // Nếu sai tài khoản / mật khẩu
+    if (loginError) {
 
-      document
-        .getElementById("adminScreen")
-        .classList.add("hidden");
+      error.textContent =
+        "Email hoặc mật khẩu không đúng.";
 
-      document
-        .getElementById("loginScreen")
-        .classList.remove("hidden");
+      console.error(loginError);
 
+      return;
     }
 
-
     // ==========================================
-    // GỬI PHẢN HỒI
+    // KIỂM TRA CÓ PHẢI ADMIN KHÔNG
     // ==========================================
 
-    async function sendReply() {
+    const { data: isAdmin, error: adminError } =
+      await supabaseClient.rpc("is_admin");
 
-      alert("Chức năng gửi phản hồi sẽ được kết nối ở bước tiếp theo.");
+    if (adminError) {
 
+      console.error(adminError);
+
+      error.textContent =
+        "Không thể kiểm tra quyền quản trị.";
+
+      await supabaseClient.auth.signOut();
+
+      return;
     }
 
-  </script>
+    // Không phải admin
+    if (!isAdmin) {
+
+      error.textContent =
+        "Tài khoản này không có quyền quản trị.";
+
+      await supabaseClient.auth.signOut();
+
+      return;
+    }
+
+    // ==========================================
+    // ĐĂNG NHẬP THÀNH CÔNG
+    // ==========================================
+
+    error.textContent = "";
+
+    document
+      .getElementById("loginScreen")
+      .classList.add("hidden");
+
+    document
+      .getElementById("adminScreen")
+      .classList.remove("hidden");
+
+  }
+
+
+  // ==========================================
+  // ĐĂNG XUẤT
+  // ==========================================
+
+  async function logout() {
+
+    await supabaseClient.auth.signOut();
+
+    document
+      .getElementById("adminScreen")
+      .classList.add("hidden");
+
+    document
+      .getElementById("loginScreen")
+      .classList.remove("hidden");
+
+  }
+
+
+  // ==========================================
+  // GỬI PHẢN HỒI
+  // ==========================================
+
+  async function sendReply() {
+
+    alert(
+      "Chức năng gửi phản hồi sẽ được kết nối ở bước tiếp theo."
+    );
+
+  }
+
+</script>
 
 </body>
 </html>
