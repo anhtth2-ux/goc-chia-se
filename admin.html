@@ -222,10 +222,18 @@
     >
 
     <button class="login-button" onclick="login()">
-      Đăng nhập
-    </button>
+  Đăng nhập
+</button>
 
-    <div id="loginError" class="error"></div>
+<button
+  type="button"
+  onclick="resetPassword()"
+  style="width:100%; margin-top:10px; background:white; color:#333; border:1px solid #ddd;"
+>
+  Quên mật khẩu?
+</button>
+
+<div id="loginError" class="error"></div>
   </div>
 
 
@@ -407,7 +415,53 @@
 
   }
 
+ // ==========================================
+  // QUÊN MẬT KHẨU
+  // ==========================================
 
+  async function resetPassword() {
+
+    const email =
+      document.getElementById("email").value.trim();
+
+    const error =
+      document.getElementById("loginError");
+
+    error.textContent = "";
+
+    if (!email) {
+
+      error.textContent =
+        "Vui lòng nhập email quản trị trước.";
+
+      return;
+    }
+
+    error.textContent =
+      "Đang gửi email đặt lại mật khẩu...";
+
+    const { error: resetError } =
+      await supabaseClient.auth.resetPasswordForEmail(
+        email,
+        {
+          redirectTo:
+            "https://anhtth2-ux.github.io/goc-chia-se/reset-password.html"
+        }
+      );
+
+    if (resetError) {
+
+      console.error(resetError);
+
+      error.textContent =
+        "Không thể gửi email. Vui lòng thử lại sau.";
+
+      return;
+    }
+
+    error.textContent =
+      "Đã gửi email đặt lại mật khẩu. Hãy kiểm tra hộp thư của bạn.";
+  }
   // ==========================================
   // ĐĂNG XUẤT
   // ==========================================
