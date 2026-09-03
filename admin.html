@@ -134,13 +134,25 @@
       font-size: 20px;
     }
 
-    .conversation {
-      padding: 15px;
-      border: 1px solid #eee;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
+.conversation {
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  position: relative;
+}
+
+.unread-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 8px;
+  border-radius: 20px;
+  background: #e53935;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+}
 
     .conversation:hover {
       background: #f8f8f8;
@@ -475,26 +487,49 @@
         return;
       }
 
-      list.innerHTML = "";
+list.innerHTML = "";
 
-      data.forEach(conversation => {
+const { data: unreadMessages, error: unreadError } =
+  await supabaseClient
+    .from("messages")
+    .select("conversation_id")
+    .eq("sender", "student")
+    .eq("read_by_admin", false);
+
+if (unreadError) {
+  console.error(unreadError);
+}
+
+const unreadCount = {};
+
+(unreadMessages || []).forEach(message => {
+  unreadCount[message.conversation_id] =
+    (unreadCount[message.conversation_id] || 0) + 1;
+});
+
+data.forEach(conversation => {
 
         const item =
           document.createElement("div");
 
         item.className = "conversation";
 
-        item.innerHTML =
-          "<div class='conversation-code'>" +
-          "Mã: " +
-          escapeHtml(conversation.access_code) +
-          "</div>" +
-          "<div class='conversation-time'>" +
-          formatDate(
-            conversation.updated_at ||
-            conversation.created_at
-          ) +
-          "</div>";
+const count = unreadCount[conversation.id] || 0;
+
+item.innerHTML =
+  "<div class='conversation-code'>" +
+  "Mã: " +
+  escapeHtml(conversation.access_code) +
+  "</div>" +
+  "<div class='conversation-time'>" +
+  formatDate(
+    conversation.updated_at ||
+    conversation.created_at
+  ) +
+  "</div>" +
+  (count > 0
+    ? "<div class='unread-badge'>Tin nhắn mới (" + count + ")</div>"
+    : "");
 
         item.onclick = function() {
           selectConversation(conversation);
@@ -508,7 +543,12 @@
     async function selectConversation(conversation) {
 
       currentConversation = conversation;
-
+await supabaseClient
+  .from("messages")
+  .update({ read_by_admin: true })
+  .eq("conversation_id", conversation.id)
+  .eq("sender", "student")
+  .eq("read_by_admin", false);
       document
         .getElementById("conversationTitle")
         .textContent =
