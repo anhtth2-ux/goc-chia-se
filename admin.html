@@ -560,6 +560,7 @@ await supabaseClient
         .classList.remove("hidden");
 
       await loadMessages(conversation.id);
+      await loadConversations();
     }
 
 
