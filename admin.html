@@ -349,7 +349,40 @@
       );
 
     let currentConversation = null;
+let realtimeChannel = null;
 
+function setupRealtime() {
+
+  if (realtimeChannel) {
+    supabaseClient.removeChannel(realtimeChannel);
+  }
+
+  realtimeChannel = supabaseClient
+    .channel("admin-messages")
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "messages"
+      },
+      async (payload) => {
+
+        const newMessage = payload.new;
+
+        await loadConversations();
+
+        if (
+          currentConversation &&
+          newMessage.conversation_id === currentConversation.id
+        ) {
+          await loadMessages(currentConversation.id);
+        }
+
+      }
+    )
+    .subscribe();
+}
 
     async function login() {
 
@@ -561,6 +594,7 @@ await supabaseClient
 
       await loadMessages(conversation.id);
       await loadConversations();
+      setupRealtime();
     }
 
 
