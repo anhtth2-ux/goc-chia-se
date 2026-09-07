@@ -728,7 +728,6 @@ await supabaseClient
         item.appendChild(sender);
         item.appendChild(content);
 
-        box.appendChild(item);
         const deleteButton = document.createElement("button");
 deleteButton.textContent = "Xóa";
 deleteButton.style.marginTop = "6px";
@@ -755,6 +754,8 @@ deleteButton.onclick = async function() {
   await loadMessages(conversationId);
   await loadConversations();
 };
+        item.appendChild(deleteChatButton);
+box.appendChild(item);
       });
 
       box.scrollTop = box.scrollHeight;
