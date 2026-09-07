@@ -42,14 +42,22 @@
       margin-bottom: 25px;
     }
 
-    input {
-      width: 100%;
-      padding: 13px 14px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      margin-bottom: 14px;
-      font-size: 15px;
-    }
+input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #cdded9;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  font-size: 15px;
+  background: #fbfdfc;
+  color: #29443f;
+}
+
+input:focus {
+  outline: none;
+  border-color: #47766d;
+  box-shadow: 0 0 0 3px rgba(71,118,109,0.10);
+}
 
     button {
       border: none;
@@ -72,10 +80,11 @@
       border: 1px solid #ddd;
     }
 
-    .logout-button {
-      background: #eee;
-    }
-
+.logout-button {
+  background: #e5f0ec;
+  color: #47766d;
+  border: 1px solid #cdded9;
+}
     .error {
       color: #d33;
       text-align: center;
@@ -147,18 +156,20 @@
 .unread-badge {
   display: inline-block;
   margin-top: 8px;
-  padding: 4px 8px;
+  padding: 5px 10px;
   border-radius: 20px;
-  background: #e53935;
+  background: #d96c5f;
   color: white;
   font-size: 11px;
   font-weight: bold;
 }
 
-    .conversation:hover {
-      background: #f8f8f8;
-    }
-
+.conversation:hover {
+  background: #f3f8f6;
+  border-color: #b9d4cc;
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
     .conversation-code {
       font-weight: bold;
     }
