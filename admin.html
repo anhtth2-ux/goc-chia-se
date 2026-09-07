@@ -677,6 +677,32 @@ await supabaseClient
         item.appendChild(content);
 
         box.appendChild(item);
+        const deleteButton = document.createElement("button");
+deleteButton.textContent = "Xóa";
+deleteButton.style.marginTop = "6px";
+deleteButton.style.padding = "5px 9px";
+deleteButton.style.fontSize = "11px";
+deleteButton.style.background = "#f3e1df";
+deleteButton.style.color = "#b54f43";
+
+deleteButton.onclick = async function() {
+  if (!confirm("Bạn có chắc muốn xóa tin nhắn này không?")) {
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("messages")
+    .delete()
+    .eq("id", message.id);
+
+  if (error) {
+    alert("Không thể xóa tin nhắn: " + error.message);
+    return;
+  }
+
+  await loadMessages(conversationId);
+  await loadConversations();
+};
       });
 
       box.scrollTop = box.scrollHeight;
