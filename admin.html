@@ -556,86 +556,109 @@ const unreadCount = {};
 
 data.forEach(conversation => {
 
-        const item =
-          document.createElement("div");
+  const item = document.createElement("div");
 
-        item.className = "conversation";
+  item.className = "conversation";
 
-const count = unreadCount[conversation.id] || 0;
+  const count = unreadCount[conversation.id] || 0;
 
-item.innerHTML =
-  "<div class='conversation-code'>" +
-  "Mã: " +
-  escapeHtml(conversation.access_code) +
-  "</div>" +
-  "<div class='conversation-time'>" +
-  formatDate(
-    conversation.updated_at ||
-    conversation.created_at
-  ) +
-  "</div>" +
-  (count > 0
-    ? "<div class='unread-badge'>Tin nhắn mới (" + count + ")</div>"
-    : "");
+  item.innerHTML =
+    "<div class='conversation-code'>" +
+    "Mã: " +
+    escapeHtml(conversation.access_code) +
+    "</div>" +
+    "<div class='conversation-time'>" +
+    formatDate(
+      conversation.updated_at ||
+      conversation.created_at
+    ) +
+    "</div>" +
+    (count > 0
+      ? "<div class='unread-badge'>Tin nhắn mới (" + count + ")</div>"
+      : "");
 
-item.onclick = function() {
-  selectConversation(conversation);
-};
+  item.onclick = function() {
+    selectConversation(conversation);
+  };
 
-const deleteChatButton = document.createElement("button");
-deleteChatButton.textContent = "🗑 Xóa";
-deleteChatButton.style.marginTop = "8px";
-deleteChatButton.style.padding = "6px 10px";
-deleteChatButton.style.fontSize = "12px";
-deleteChatButton.style.background = "#f3e1df";
-deleteChatButton.style.color = "#b54f43";
+  const deleteChatButton = document.createElement("button");
 
-deleteChatButton.onclick = async function(event) {
-  event.stopPropagation();
+  deleteChatButton.textContent = "🗑 Xóa";
 
-  if (!confirm("Bạn có chắc muốn xóa toàn bộ đoạn chat này không?")) {
-    return;
-  }
+  deleteChatButton.style.marginTop = "8px";
+  deleteChatButton.style.padding = "6px 10px";
+  deleteChatButton.style.fontSize = "12px";
+  deleteChatButton.style.background = "#f3e1df";
+  deleteChatButton.style.color = "#b54f43";
 
-  const { error: messageError } = await supabaseClient
-    .from("messages")
-    .delete()
-    .eq("conversation_id", conversation.id);
+  deleteChatButton.onclick = async function(event) {
 
-  if (messageError) {
-    alert("Không thể xóa tin nhắn: " + messageError.message);
-    return;
-  }
+    event.stopPropagation();
 
-  const { error: conversationError } = await supabaseClient
-    .from("conversations")
-    .delete()
-    .eq("id", conversation.id);
+    if (!confirm(
+      "Bạn có chắc muốn xóa toàn bộ đoạn chat này không?"
+    )) {
+      return;
+    }
 
-  if (conversationError) {
-    alert("Không thể xóa đoạn chat: " + conversationError.message);
-    return;
-  }
+    const { error: messageError } =
+      await supabaseClient
+        .from("messages")
+        .delete()
+        .eq("conversation_id", conversation.id);
 
-  if (
-    currentConversation &&
-    currentConversation.id === conversation.id
-  ) {
-    currentConversation = null;
-    document.getElementById("conversationTitle").textContent =
-      "Chọn một cuộc trò chuyện";
+    if (messageError) {
+      alert(
+        "Không thể xóa tin nhắn: " +
+        messageError.message
+      );
+      return;
+    }
 
-    document.getElementById("messages").innerHTML =
-      '<div class="empty">Chọn một cuộc trò chuyện để xem tin nhắn</div>';
+    const { error: conversationError } =
+      await supabaseClient
+        .from("conversations")
+        .delete()
+        .eq("id", conversation.id);
 
-    document.getElementById("replyArea").classList.add("hidden");
-  }
+    if (conversationError) {
+      alert(
+        "Không thể xóa đoạn chat: " +
+        conversationError.message
+      );
+      return;
+    }
 
-  await loadConversations();
-};
+    if (
+      currentConversation &&
+      currentConversation.id === conversation.id
+    ) {
 
-        list.appendChild(item);
-      });
+      currentConversation = null;
+
+      document
+        .getElementById("conversationTitle")
+        .textContent =
+        "Chọn một cuộc trò chuyện";
+
+      document
+        .getElementById("messages")
+        .innerHTML =
+        '<div class="empty">Chọn một cuộc trò chuyện để xem tin nhắn</div>';
+
+      document
+        .getElementById("replyArea")
+        .classList.add("hidden");
+    }
+
+    await loadConversations();
+  };
+
+  item.appendChild(deleteChatButton);
+
+  list.appendChild(item);
+
+});
     }
 
 
@@ -728,7 +751,8 @@ await supabaseClient
         item.appendChild(sender);
         item.appendChild(content);
 
-        const deleteButton = document.createElement("button");
+const deleteButton = document.createElement("button");
+
 deleteButton.textContent = "Xóa";
 deleteButton.style.marginTop = "6px";
 deleteButton.style.padding = "5px 9px";
@@ -736,7 +760,10 @@ deleteButton.style.fontSize = "11px";
 deleteButton.style.background = "#f3e1df";
 deleteButton.style.color = "#b54f43";
 
-deleteButton.onclick = async function() {
+deleteButton.onclick = async function(event) {
+
+  event.stopPropagation();
+
   if (!confirm("Bạn có chắc muốn xóa tin nhắn này không?")) {
     return;
   }
@@ -747,14 +774,18 @@ deleteButton.onclick = async function() {
     .eq("id", message.id);
 
   if (error) {
-    alert("Không thể xóa tin nhắn: " + error.message);
+    alert(
+      "Không thể xóa tin nhắn: " +
+      error.message
+    );
     return;
   }
 
   await loadMessages(conversationId);
   await loadConversations();
 };
-        item.appendChild(deleteChatButton);
+
+item.appendChild(deleteButton);
 box.appendChild(item);
       });
 
